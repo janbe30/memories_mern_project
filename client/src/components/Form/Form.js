@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { createPost, updatePost } from "../../state/actions/posts";
 
@@ -15,8 +15,15 @@ const Form = ({ currentId, setCurrentId }) => {
     tags: "",
     selectedFile: "",
   });
+  const selectedPost = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  useEffect(() => {
+    if (selectedPost) setPostData(selectedPost);
+  }, [selectedPost]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,9 +32,19 @@ const Form = ({ currentId, setCurrentId }) => {
     } else {
       dispatch(createPost(postData));
     }
+    clear();
   };
 
-  const clear = () => {};
+  const clear = () => {
+    setCurrentId(null);
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -37,7 +54,9 @@ const Form = ({ currentId, setCurrentId }) => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">
+          {currentId ? "Editing" : "Creating"} a Memory
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -72,7 +91,9 @@ const Form = ({ currentId, setCurrentId }) => {
           label="Tags"
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase
@@ -91,7 +112,7 @@ const Form = ({ currentId, setCurrentId }) => {
           type="submit"
           fullWidth
         >
-          Submit
+          {currentId ? "Save changes" : "Submit"}
         </Button>
         <Button
           variant="contained"
