@@ -43,11 +43,6 @@ const Post = ({ post, setCurrentId }) => {
           <MoreHorizIcon fontSize="default" />
         </Button>
       </div>
-      <div className={classes.details}>
-        <Typography variant="body2" color="textSecondary">
-          {post.tags.map((tag) => `#${tag} `)}
-        </Typography>
-      </div>
       <Typography className={classes.title} variant="h5" gutterBottom>
         {post.title}
       </Typography>
@@ -56,6 +51,11 @@ const Post = ({ post, setCurrentId }) => {
           {post.message}
         </Typography>
       </CardContent>
+      <div className={classes.details}>
+        <Typography variant="body2" color="textSecondary">
+          {post.tags.map((tag) => `#${tag} `)}
+        </Typography>
+      </div>
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
